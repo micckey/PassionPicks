@@ -2,120 +2,123 @@ import 'dart:convert';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:passion_picks/components/cart_component.dart';
 import 'package:passion_picks/components/wishlist_component.dart';
 import 'package:passion_picks/config/custom_widgets.dart';
 import 'package:passion_picks/config/style.dart';
-import 'package:passion_picks/controllers/cart_controller.dart';
-import '../../controllers/wishlist_controller.dart';
+import 'package:passion_picks/views/product_view_page.dart';
 import '../../models/product_model.dart';
 
 class HomePageContent extends StatefulWidget {
   final List<Product> products;
 
-  const HomePageContent({super.key, required this.products});
+  final String? userId;
+
+  const HomePageContent({super.key, required this.products, this.userId});
 
   @override
   State<HomePageContent> createState() => _HomePageContentState();
 }
 
 class _HomePageContentState extends State<HomePageContent> {
-  final WishListController _wishListController = Get.put(WishListController());
-  final CartController _cartController = Get.put(CartController());
+  final PageController _pageController = PageController(
+    initialPage: 0,
+  );
+  int _currentPageIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-
     //Define the Image Slider widget
     Widget buildImageSlider(Product product, {required bool isSlider}) {
       return ClipRRect(
         borderRadius: BorderRadius.circular(30.0),
-        child: Stack(
-          children: <Widget>[
-            Image.asset(
-              product.image,
-              fit: BoxFit.fill,
-              width: 1000.0,
-            ),
-            Positioned(
-              bottom: 0.0,
-              left: 0.0,
-              right: 0.0,
-              child: Container(
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Color.fromARGB(200, 0, 0, 0),
-                      Color.fromARGB(0, 0, 0, 0)
+        child: GestureDetector(
+          onTap: () {
+            Get.to(() => ProductViewPage(product: product, userId: widget.userId,));
+          },
+          child: Stack(
+            children: <Widget>[
+              Image.asset(
+                product.image,
+                fit: BoxFit.fill,
+                width: 1000.0,
+              ),
+              Positioned(
+                bottom: 0.0,
+                left: 0.0,
+                right: 0.0,
+                child: Container(
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Color.fromARGB(200, 0, 0, 0),
+                        Color.fromARGB(0, 0, 0, 0)
+                      ],
+                      begin: Alignment.bottomCenter,
+                      end: Alignment.topCenter,
+                    ),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 10.0, horizontal: 20.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      MyTextWidget(
+                          myText: product.name,
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                          fontColor: Colors.white),
+                      isSlider
+                          ? const SizedBox.shrink()
+                          : MyTextWidget(
+                              myText: 'Ksh${product.price.toString()}',
+                              fontSize: 25.0,
+                              fontWeight: FontWeight.w900,
+                              fontColor: AppColors.titlesTextColor),
                     ],
-                    begin: Alignment.bottomCenter,
-                    end: Alignment.topCenter,
                   ),
                 ),
-                padding: const EdgeInsets.symmetric(
-                    vertical: 10.0, horizontal: 20.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    MyTextWidget(
-                        myText: product.name,
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.bold,
-                        fontColor: Colors.white),
-                    isSlider
-                        ? const SizedBox.shrink()
-                        : MyTextWidget(
-                            myText: 'Ksh${product.price.toString()}',
-                            fontSize: 25.0,
-                            fontWeight: FontWeight.w900,
-                            fontColor: AppColors.titlesTextColor),
-                  ],
-                ),
               ),
-            ),
-            isSlider
-                ? const SizedBox.shrink()
-                : Positioned(
-                    top: 10,
-                    right: 20,
-                    child: Container(
-                      height: 60,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        gradient: const LinearGradient(
-                          colors: [
-                            Color.fromARGB(160, 0, 0, 0),
-                            Color.fromARGB(50, 0, 0, 0)
-                          ],
-                          begin: Alignment.topRight,
-                          end: Alignment.topCenter,
+              isSlider
+                  ? const SizedBox.shrink()
+                  : Positioned(
+                      top: 10,
+                      right: 20,
+                      child: Container(
+                        height: 60,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(30),
+                          gradient: const LinearGradient(
+                            colors: [
+                              Color.fromARGB(160, 0, 0, 0),
+                              Color.fromARGB(50, 0, 0, 0)
+                            ],
+                            begin: Alignment.topRight,
+                            end: Alignment.topCenter,
+                          ),
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        child: Center(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              WishListIcon(
+                                product: product,
+                                userId: widget.userId,
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              CartIcon(product: product)
+                            ],
+                          ),
                         ),
                       ),
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                      child: Center(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            WishListIcon(
-                              userId: 2.toString(),
-                              productId: product.id,
-                              // wishlistController: _wishListController,
-                            ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            CartIcon(
-                              userId: 2,
-                              productId: int.parse(product.id),
-                              // cartController: _cartController,
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  )
-          ],
+                    )
+            ],
+          ),
         ),
       );
     }
@@ -140,7 +143,7 @@ class _HomePageContentState extends State<HomePageContent> {
             id: 101.toString(),
             name: '',
             description: '',
-            price: 0.0.toString(),
+            price: 0.toString(),
             image: ''));
 
     return Scaffold(
@@ -194,42 +197,51 @@ class _HomePageContentState extends State<HomePageContent> {
               const SizedBox(
                 height: 5,
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 5),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 230,
-                      width: double.maxFinite,
-                      child: PageView.builder(
-                        scrollDirection: Axis.horizontal,
-                        physics: const BouncingScrollPhysics(),
-                        itemCount: pageViewSliders.length,
-                        // Use imageSliders length
-                        itemBuilder: (context, index) {
-                          return pageViewSliders[
-                              index]; // Return each imageSlider
-                        },
-                      ),
+              Column(
+                children: [
+                  SizedBox(
+                    height: 230,
+                    width: double.maxFinite,
+                    child: PageView.builder(
+                      scrollDirection: Axis.horizontal,
+                      physics: const BouncingScrollPhysics(),
+                      controller: _pageController,
+                      itemCount: pageViewSliders.length,
+                      // Use imageSliders length
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 5),
+                          child: pageViewSliders[index],
+                        ); // Return each imageSlider
+                      },
+                      onPageChanged: (index) {
+                        setState(() {
+                          _currentPageIndex = index;
+                        });
+                      },
                     ),
-                    const SizedBox(height: 8),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(
-                        pageViewSliders.length, // Use imageSliders length
-                        (index) => Container(
-                          margin: const EdgeInsets.all(2),
-                          width: 10,
-                          height: 10,
-                          decoration: BoxDecoration(
-                            color: Colors.black,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(
+                      pageViewSliders.length, // Use imageSliders length
+                      (index) => Container(
+                        margin: index == _currentPageIndex
+                            ? const EdgeInsets.all(3)
+                            : const EdgeInsets.all(1.5),
+                        width: index == _currentPageIndex ? 15 : 10,
+                        height: index == _currentPageIndex ? 10 : 10,
+                        decoration: BoxDecoration(
+                          color: index == _currentPageIndex
+                              ? Colors.grey
+                              : Colors.black,
+                          borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                    )
-                  ],
-                ),
+                    ),
+                  )
+                ],
               ),
               const SizedBox(
                 height: 10,
@@ -242,60 +254,68 @@ class _HomePageContentState extends State<HomePageContent> {
               const SizedBox(
                 height: 5,
               ),
-              Container(
-                height: 180,
-                width: double.maxFinite,
-                margin: const EdgeInsets.symmetric(horizontal: 5),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                child: Stack(
-                  children: [
-                    Positioned.fill(
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(30),
-                        child: Image.asset(
-                          seedling.image,
-                          fit: BoxFit.fill,
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 0,
-                      left: 0,
-                      right: 0,
-                      child: Container(
-                        decoration: BoxDecoration(
+              GestureDetector(
+                onTap: () {
+                  Get.to(() => ProductViewPage(
+                        product: seedling,
+                        userId: widget.userId,
+                      ));
+                },
+                child: Container(
+                  height: 180,
+                  width: double.maxFinite,
+                  margin: const EdgeInsets.symmetric(horizontal: 5),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: Stack(
+                    children: [
+                      Positioned.fill(
+                        child: ClipRRect(
                           borderRadius: BorderRadius.circular(30),
-                          gradient: const LinearGradient(
-                            colors: [
-                              Color.fromARGB(200, 0, 0, 0),
-                              Color.fromARGB(0, 0, 0, 0)
-                            ],
-                            begin: Alignment.bottomCenter,
-                            end: Alignment.topCenter,
+                          child: Image.asset(
+                            seedling.image,
+                            fit: BoxFit.fill,
                           ),
                         ),
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 10.0, horizontal: 20.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            MyTextWidget(
-                                myText: seedling.name,
-                                fontSize: 20.0,
-                                fontWeight: FontWeight.bold,
-                                fontColor: Colors.white),
-                            MyTextWidget(
-                                myText: 'Ksh${seedling.price.toString()}',
-                                fontSize: 25.0,
-                                fontWeight: FontWeight.w900,
-                                fontColor: AppColors.titlesTextColor),
-                          ],
-                        ),
                       ),
-                    )
-                  ],
+                      Positioned(
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(30),
+                            gradient: const LinearGradient(
+                              colors: [
+                                Color.fromARGB(200, 0, 0, 0),
+                                Color.fromARGB(0, 0, 0, 0)
+                              ],
+                              begin: Alignment.bottomCenter,
+                              end: Alignment.topCenter,
+                            ),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 10.0, horizontal: 20.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              MyTextWidget(
+                                  myText: seedling.name,
+                                  fontSize: 20.0,
+                                  fontWeight: FontWeight.bold,
+                                  fontColor: Colors.white),
+                              MyTextWidget(
+                                  myText: 'Ksh${seedling.price.toString()}',
+                                  fontSize: 25.0,
+                                  fontWeight: FontWeight.w900,
+                                  fontColor: AppColors.titlesTextColor),
+                            ],
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(height: 100)

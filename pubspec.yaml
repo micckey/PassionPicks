@@ -39,6 +39,8 @@ dependencies:
   http: ^1.2.1
   carousel_slider: ^4.2.1
   loading_animation_widget: ^1.2.1
+  intl:
+  shared_preferences: ^2.2.3
 
 dev_dependencies:
   flutter_test:

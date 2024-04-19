@@ -79,6 +79,9 @@ class MyTextField extends StatelessWidget {
 }
 
 class MyPasswordField extends StatelessWidget {
+  final onChanged;
+  final TextEditingController controller;
+
   final String hintText;
   bool isHidden;
   VoidCallback toggleVisibility;
@@ -88,6 +91,8 @@ class MyPasswordField extends StatelessWidget {
     required this.isHidden,
     required this.toggleVisibility,
     super.key,
+    this.onChanged,
+    required this.controller,
   });
 
   @override
@@ -110,6 +115,8 @@ class MyPasswordField extends StatelessWidget {
       child: Center(
         child: TextField(
           obscureText: isHidden ? false : true,
+          controller: controller,
+          onChanged: onChanged,
           decoration: InputDecoration(
               suffixIcon: GestureDetector(
                   onTap: toggleVisibility,
@@ -138,10 +145,10 @@ class MyHomePageTextWidget extends StatelessWidget {
 
   MyHomePageTextWidget(
       {super.key,
-        required this.myText,
-        required this.fontSize,
-        required this.fontWeight,
-        required this.fontColor});
+      required this.myText,
+      required this.fontSize,
+      required this.fontWeight,
+      required this.fontColor});
 
   @override
   Widget build(BuildContext context) {
@@ -195,44 +202,46 @@ class CustomNavBarIcons extends StatelessWidget {
                   ),
                   if (index == 2)
                     Obx(() {
-                      final cartLength = cartController.cartItems.length;
+                      final cartController = Get.find<CartController>();
+                      final cartLength = cartController.cartProducts.length;
                       return cartLength > 0
                           ? Positioned(
-                        top: 0,
-                        right: 0,
-                        child: Container(
-                          padding: const EdgeInsets.all(5),
-                          decoration: BoxDecoration(
-                            color: AppColors.cardsColor,
-                            shape: BoxShape.circle,
-                          ),
-                          child: Text(
-                            cartLength.toString(),
-                            style: const TextStyle(color: Colors.white),
-                          ),
-                        ),
-                      )
+                              top: 0,
+                              right: 0,
+                              child: Container(
+                                padding: const EdgeInsets.all(5),
+                                decoration: BoxDecoration(
+                                  color: AppColors.cardsColor,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Text(
+                                  cartLength.toString(),
+                                  style: const TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            )
                           : const SizedBox.shrink();
                     }),
                   if (index == 3)
                     Obx(() {
-                      final wishlistLength = wishlistController.wishlistItems.length;
+                      final wishlistLength =
+                          wishlistController.wishlistProducts.length;
                       return wishlistLength > 0
                           ? Positioned(
-                        top: 0,
-                        right: 0,
-                        child: Container(
-                          padding: const EdgeInsets.all(5),
-                          decoration: BoxDecoration(
-                            color: AppColors.cardsColor,
-                            shape: BoxShape.circle,
-                          ),
-                          child: Text(
-                            wishlistLength.toString(),
-                            style: const TextStyle(color: Colors.white),
-                          ),
-                        ),
-                      )
+                              top: 0,
+                              right: 0,
+                              child: Container(
+                                padding: const EdgeInsets.all(5),
+                                decoration: BoxDecoration(
+                                  color: AppColors.cardsColor,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Text(
+                                  wishlistLength.toString(),
+                                  style: const TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            )
                           : const SizedBox.shrink();
                     }),
                 ],
@@ -243,4 +252,14 @@ class CustomNavBarIcons extends StatelessWidget {
       ),
     );
   }
+}
+
+buildSnackBar(title, message, backgroundColor, [duration = 2]) {
+  Get.snackbar(title, message,
+      isDismissible: true,
+      dismissDirection: DismissDirection.horizontal,
+      colorText: AppColors.menuTextColor,
+      snackPosition: SnackPosition.TOP,
+      animationDuration: Duration(seconds: duration),
+      backgroundColor: backgroundColor);
 }

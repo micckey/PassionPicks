@@ -2,21 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:passion_picks/config/style.dart';
 import '../controllers/cart_controller.dart';
+import '../models/product_model.dart'; // Import Product model
 
 class CartIcon extends StatelessWidget {
-  final int userId;
-  final int productId;
+  final Product product;
+  final String? userId;
 
-  const CartIcon({Key? key, required this.userId, required this.productId})
-      : super(key: key);
+  const CartIcon({Key? key, required this.product, this.userId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final cartController = Get.find<CartController>();
+
     return Obx(
-      () {
-        final controller = Get.find<CartController>();
-        final isInCart = controller.cartItems.any(
-            (item) => item.userId == userId && item.productId == productId);
+          () {
+
+
+            final isInCart = cartController.cartProducts.any((p) => p.id == product.id);
+
+
         return IconButton(
           icon: Icon(
             isInCart ? Icons.shopping_cart : Icons.shopping_cart_outlined,
@@ -24,11 +28,11 @@ class CartIcon extends StatelessWidget {
             size: 35,
           ),
           onPressed: () {
-            if (!controller.isLoading.value) {
+            if (!cartController.isLoading.value) {
               if (isInCart) {
-                controller.removeFromCart(userId, productId);
+                cartController.removeFromCart(userId, product);
               } else {
-                controller.addToCart(userId, productId, 1);
+                cartController.addToCart(userId, product);
               }
             }
           },

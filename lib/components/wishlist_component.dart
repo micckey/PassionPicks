@@ -3,32 +3,46 @@ import 'package:get/get.dart';
 import 'package:passion_picks/config/style.dart';
 import 'package:passion_picks/controllers/wishlist_controller.dart';
 
-class WishListIcon extends StatelessWidget {
-  final String userId;
-  final String productId;
+import '../models/product_model.dart';
 
-  const WishListIcon({Key? key, required this.userId, required this.productId})
-      : super(key: key);
+class WishListIcon extends StatelessWidget {
+  final Product product;
+  final bool isProductPage;
+
+  final String? userId;
+
+  const WishListIcon({
+    super.key,
+    required this.product,
+    this.isProductPage = false,
+    this.userId,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final wishlistController = Get.find<WishListController>();
+
     return Obx(
       () {
-        final controller = Get.find<WishListController>();
-        final isInWishlist = controller.wishlistItems.any(
-            (item) => item.userId == userId && item.productId == productId);
+        final isInWishList =
+            wishlistController.wishlistProducts.any((p) => p.id == product.id);
+
         return IconButton(
           icon: Icon(
-            isInWishlist ? Icons.favorite : Icons.favorite_border_outlined,
-            color: isInWishlist ? AppColors.highlightsColor : Colors.white,
+            isInWishList ? Icons.favorite : Icons.favorite_border_outlined,
+            color: isInWishList
+                ? AppColors.highlightsColor
+                : isProductPage
+                    ? Colors.black
+                    : Colors.white,
             size: 35,
           ),
           onPressed: () {
-            if (!controller.isLoading.value) {
-              if (isInWishlist) {
-                controller.removeFromWishList(userId, productId);
+            if (!wishlistController.isLoading.value) {
+              if (isInWishList) {
+                wishlistController.removeFromWishList(userId, product);
               } else {
-                controller.addToWishList(userId, productId);
+                wishlistController.addToWishList(userId, product);
               }
             }
           },

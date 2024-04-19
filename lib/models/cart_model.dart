@@ -13,7 +13,7 @@ class CartItem {
     return CartItem(
       userId: json['user_id'],
       productId: json['product_id'],
-      quantity: json['description'],
+      quantity: json['quantity'],
     );
   }
 }
