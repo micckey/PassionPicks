@@ -68,7 +68,12 @@ class _HistoryPageState extends State<HistoryPage> {
                 child: LoadingAnimationWidget.fourRotatingDots(
                     color: AppColors.secondaryBackgroundColor, size: 80));
           } else if (snapshot.hasError) {
-            return const Center(child: Text('Experiencing trouble fetching data \u{1F615}'));
+            return Center(child: MyTextWidget(
+              myText: 'Experiencing trouble fetching data \u{1F615}',
+              fontSize: 18.0,
+              fontWeight: FontWeight.normal,
+              fontColor: AppColors.menuTextColor,
+            ));
           } else {
             final transactions = snapshot.data!;
             if (transactions.isEmpty) {

@@ -25,9 +25,9 @@ class CartPage extends StatelessWidget {
             if (cartController.cartProducts.isEmpty) {
               return Center(
                 child: MyTextWidget(
-                  myText: 'No items in cart',
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.bold,
+                  myText: 'No items in cart \u{1F636}',
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.normal,
                   fontColor: AppColors.menuTextColor,
                 ),
               );

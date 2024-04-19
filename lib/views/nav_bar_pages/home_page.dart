@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:passion_picks/config/style.dart';
+import '../../config/custom_widgets.dart';
 import '../../models/product_model.dart';
 import 'home_page_content.dart';
 
@@ -21,7 +22,13 @@ class HomePage extends StatelessWidget {
               child: LoadingAnimationWidget.fourRotatingDots(
                   color: AppColors.secondaryBackgroundColor, size: 80));
         } else if (snapshot.hasError) {
-          return const Center(child: Text('Experiencing trouble fetching data \u{1F615}'));
+          return Center(
+              child: MyTextWidget(
+            myText: 'Experiencing trouble fetching data \u{1F615}',
+            fontSize: 18.0,
+            fontWeight: FontWeight.normal,
+            fontColor: AppColors.menuTextColor,
+          ));
         } else if (snapshot.hasData) {
           final products = snapshot.data!;
           return HomePageContent(

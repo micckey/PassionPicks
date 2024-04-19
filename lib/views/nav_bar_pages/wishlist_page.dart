@@ -27,9 +27,9 @@ class WishListPage extends StatelessWidget {
             if (wishlistController.wishlistProducts.isEmpty) {
               return Center(
                 child: MyTextWidget(
-                  myText: 'No items in wishlist',
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.bold,
+                  myText: 'No items in wishlist \u{1F636}',
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.normal,
                   fontColor: AppColors.menuTextColor,
                 ),
               );
