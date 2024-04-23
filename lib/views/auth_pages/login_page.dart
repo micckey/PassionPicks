@@ -67,7 +67,7 @@ class _LoginPageState extends State<LoginPage> {
             prefs.setString('token', 'auth_token');
 
             // Login successful, navigate to the next page
-            Get.to(() => const AuthProvider());
+            Get.offAll(() => const AuthProvider());
           } else {
             // Display error message
             if (responseData['message'] == 'Invalid email or password') {
