@@ -1,8 +1,5 @@
-import 'dart:convert';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:passion_picks/components/cart_component.dart';
 import 'package:passion_picks/components/wishlist_component.dart';
@@ -36,7 +33,10 @@ class _HomePageContentState extends State<HomePageContent> {
         borderRadius: BorderRadius.circular(30.0),
         child: GestureDetector(
           onTap: () {
-            Get.to(() => ProductViewPage(product: product, userId: widget.userId,));
+            Get.to(() => ProductViewPage(
+                  product: product,
+                  userId: widget.userId,
+                ));
           },
           child: Stack(
             children: <Widget>[
@@ -111,7 +111,10 @@ class _HomePageContentState extends State<HomePageContent> {
                               const SizedBox(
                                 width: 10,
                               ),
-                              CartIcon(product: product)
+                              CartIcon(
+                                product: product,
+                                userId: widget.userId,
+                              )
                             ],
                           ),
                         ),

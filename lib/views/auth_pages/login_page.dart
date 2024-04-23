@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:passion_picks/config/custom_widgets.dart';
 import 'package:passion_picks/config/style.dart';
 import 'package:passion_picks/views/auth_pages/auth_provider.dart';
-import 'package:passion_picks/views/nav_bar_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../models/user_model.dart';
@@ -37,58 +36,61 @@ class _LoginPageState extends State<LoginPage> {
         passwordController.text.trim() == '') {
       buildSnackBar(
           'Error', 'Fill in all fields first', AppColors.feedbackColor);
-    }
+    } else {
+      const String url = 'https://jay.john-muinde.com/login.php';
+      final Map<String, dynamic> data = {
+        'email': emailController.text,
+        'password': passwordController.text,
+      };
 
-    const String url = 'https://jay.john-muinde.com/login.php';
-    final Map<String, dynamic> data = {
-      'email': emailController.text,
-      'password': passwordController.text,
-    };
+      try {
+        final http.Response response = await http.post(
+          Uri.parse(url),
+          body: data,
+        );
 
-    try {
-      final http.Response response = await http.post(
-        Uri.parse(url),
-        body: data,
-      );
+        final Map<String, dynamic> responseData = jsonDecode(response.body);
+        if (response.statusCode == 200) {
+          if (responseData['status'] == 'success') {
+            // Parse user data from response
+            final User user = User.fromJson(responseData['user']);
 
-      final Map<String, dynamic> responseData = jsonDecode(response.body);
-      if (response.statusCode == 200) {
-        if (responseData['status'] == 'success') {
-          // Parse user data from response
-          final User user = User.fromJson(responseData['user']);
+            // Save user data to shared preferences
+            final SharedPreferences prefs =
+                await SharedPreferences.getInstance();
+            prefs.setString('userId', user.id);
+            prefs.setString('userEmail', user.email);
+            prefs.setString('username', user.username);
+            prefs.setString('location', user.location);
 
-          // Save user data to shared preferences
-          final SharedPreferences prefs = await SharedPreferences.getInstance();
-          prefs.setString('userId', user.id);
-          prefs.setString('userEmail', user.email);
-          prefs.setString('username', user.username);
-          prefs.setString('location', user.location);
+            // Save token to shared preferences
+            prefs.setString('token', 'auth_token');
 
-          // Save token to shared preferences
-          prefs.setString('token', 'auth_token');
-
-          // Login successful, navigate to the next page
-          Get.to(() => const AuthProvider());
-        } else {
-          // Display error message
-          if (responseData['message'] == 'Invalid email or password') {
-            buildSnackBar(
-                'Error', 'Invalid email or password', AppColors.feedbackColor);
+            // Login successful, navigate to the next page
+            Get.to(() => const AuthProvider());
+          } else {
+            // Display error message
+            if (responseData['message'] == 'Invalid email or password') {
+              buildSnackBar('Error', 'Invalid email or password',
+                  AppColors.feedbackColor);
+            }
           }
+        } else {
+          // Handle non-200 status codes
+          buildSnackBar(
+              'Error',
+              'An Unexpected Error occurred ${response.body}',
+              AppColors.feedbackColor);
         }
-      } else {
-        // Handle non-200 status codes
-        buildSnackBar('Error', 'An Unexpected Error occurred ${response.body}',
-            AppColors.feedbackColor);
-      }
-    } catch (error) {
-      if (error.toString().contains(' Network is unreachable')) {
-        buildSnackBar('Network Error', 'Check your Internet Connection',
-            AppColors.feedbackColor);
-      } else {
-        buildSnackBar(
-            'Error', 'An Unexpected Error occurred', AppColors.feedbackColor);
-        // print(error);
+      } catch (error) {
+        if (error.toString().contains(' Network is unreachable')) {
+          buildSnackBar('Network Error', 'Check your Internet Connection',
+              AppColors.feedbackColor);
+        } else {
+          buildSnackBar(
+              'Error', 'An Unexpected Error occurred', AppColors.feedbackColor);
+          // print(error);
+        }
       }
     }
   }

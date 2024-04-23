@@ -67,20 +67,54 @@ class DashBoardDrawer extends StatelessWidget {
                       fontColor: AppColors.menuTextColor),
                 ),
               ),
-            ),Expanded(child: Container()),
+            ),
+            Expanded(child: Container()),
             GestureDetector(
               onTap: () {
-                // Delete token from shared preferences
-                SharedPreferences.getInstance().then((prefs) {
-                  prefs.remove('token');
-                  prefs.remove('userId');
-                  prefs.remove('userEmail');
-                  prefs.remove('username');
-                  prefs.remove('location');
-                  Get.to(()=>const AuthProvider());
-                  // Navigate back to the previous screen
-                  // Get.back();
-                });
+                Get.defaultDialog(
+                  backgroundColor: AppColors.feedbackColor,
+                  title: 'Alert!',
+                  content: MyTextWidget(
+                    myText: 'Are you sure you want to log out?',
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.w600,
+                    fontColor: AppColors.menuTextColor,
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Get.back(),
+                      child: MyTextWidget(
+                        myText: 'cancel',
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.w900,
+                        fontColor: AppColors.menuIconsColor,
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        // Delete token from shared preferences
+                        SharedPreferences.getInstance().then((prefs) {
+                          prefs.remove('token');
+                          prefs.remove('userId');
+                          prefs.remove('userEmail');
+                          prefs.remove('username');
+                          prefs.remove('location');
+                          Get.offAll(() => const AuthProvider());
+                        });
+                      },
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all(AppColors.cardsColor),
+                      ),
+                      child: MyTextWidget(
+                        myText: 'Yes',
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.w900,
+                        fontColor: AppColors.menuIconsColor,
+                      ),
+                    )
+                  ],
+                );
               },
               child: Container(
                 width: double.maxFinite,

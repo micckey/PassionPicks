@@ -29,7 +29,7 @@ class WishListController extends GetxController {
         List<Product> products =
             jsonResponse.map((data) => Product.fromJson(data)).toList();
         wishlistProducts.value = products;
-        print('LIST::: $products'); // Check if products are parsed correctly
+        // print('LIST::: $products'); // Check if products are parsed correctly
       } else {
         print('Failed to fetch cart products: ${response.statusCode}');
         // Handle other HTTP status codes
@@ -44,7 +44,7 @@ class WishListController extends GetxController {
 
   Future<void> addToWishList(userId, Product product) async {
     isLoading.value = true;
-
+    print(userId);
     try {
       // Make network call
       final response = await http.post(
@@ -53,7 +53,7 @@ class WishListController extends GetxController {
       );
       if (response.statusCode == 200) {
         print('Item added to wishlist successfully');
-        print(response.body);
+        // print(response.body);
         wishlistProducts.add(product); // Update local wishlistProducts list
       } else {
         print('Failed to add item to wishlist');

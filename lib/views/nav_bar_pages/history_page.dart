@@ -79,9 +79,9 @@ class _HistoryPageState extends State<HistoryPage> {
             if (transactions.isEmpty) {
               return Center(
                 child: MyTextWidget(
-                  myText: 'No transactions available',
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.bold,
+                  myText: 'No Transactions available \u{1F636}',
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.normal,
                   fontColor: AppColors.menuTextColor,
                 ),
               );

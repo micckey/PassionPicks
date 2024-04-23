@@ -28,7 +28,7 @@ class CartController extends GetxController {
         List<Product> products =
             jsonResponse.map((data) => Product.fromJson(data)).toList();
         cartProducts.value = products;
-        print('LIST::: $products'); // Check if products are parsed correctly
+        // print('LIST::: $products'); // Check if products are parsed correctly
       } else {
         print('Failed to fetch cart products: ${response.statusCode}');
         // Handle other HTTP status codes
@@ -43,6 +43,8 @@ class CartController extends GetxController {
 
   void addToCart(userId, Product product) async {
     isLoading.value = true;
+    print(userId);
+
     try {
       await _addToCartInDatabase(userId, product.id).then((value) =>
           cartProducts.add(

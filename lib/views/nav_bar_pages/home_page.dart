@@ -36,7 +36,12 @@ class HomePage extends StatelessWidget {
             userId: userId,
           );
         } else {
-          return const Center(child: Text('No data available'));
+          return MyTextWidget(
+            myText: 'No Products available \u{1F636}',
+            fontSize: 18.0,
+            fontWeight: FontWeight.normal,
+            fontColor: AppColors.menuTextColor,
+          );
         }
       },
     );

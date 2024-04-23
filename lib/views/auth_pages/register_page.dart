@@ -2,12 +2,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:passion_picks/views/auth_pages/auth_provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:passion_picks/views/auth_pages/auth_page_switcher.dart';
 import '../../config/custom_widgets.dart';
 import '../../config/style.dart';
-import '../../models/user_model.dart';
-import '../nav_bar_page.dart';
+
 
 class RegisterPage extends StatefulWidget {
   final VoidCallback switchPagesFunction;
@@ -41,65 +39,50 @@ class _RegisterPageState extends State<RegisterPage> {
         passwordController.text.trim() == '') {
       buildSnackBar(
           'Error', 'Fill in all fields first', AppColors.feedbackColor);
-    } else {
-      const String url = 'https://jay.john-muinde.com/create_user.php';
-      final Map<String, dynamic> data = {
-        'username': usernameController.text,
-        'email': emailController.text,
-        'location': locationController.text,
-        'password': passwordController.text,
-      };
+      return;
+    }
 
-      try {
-        final http.Response response = await http.post(
-          Uri.parse(url),
-          body: data,
+    const String url = 'https://jay.john-muinde.com/create_user.php';
+    final Map<String, dynamic> data = {
+      'username': usernameController.text,
+      'email': emailController.text,
+      'location': locationController.text,
+      'password': passwordController.text,
+    };
+
+    try {
+      final http.Response response = await http.post(
+        Uri.parse(url),
+        body: data,
+      );
+
+      final Map<String, dynamic> responseData = jsonDecode(response.body);
+
+      if (responseData['code'] == 1) {
+        // Registration successful
+        buildSnackBar(
+          'Success',
+          'Account Created Successfully, You may proceed to Log in',
+          AppColors.cardsColor,
         );
-
-        final Map<String, dynamic> responseData = jsonDecode(response.body);
-        if (response.statusCode == 200) {
-          if (responseData['status'] == 'success') {
-            // Parse user data from response
-            final User user = User.fromJson(responseData['user']);
-
-            // Save user data to shared preferences
-            final SharedPreferences prefs =
-                await SharedPreferences.getInstance();
-            prefs.setString('userId', user.id);
-            prefs.setString('userEmail', user.email);
-            prefs.setString('username', user.username);
-            prefs.setString('location', user.location);
-
-            // Save token to shared preferences
-            prefs.setString('token', 'auth_token');
-
-            // Registration successful, navigate to the next page
-            Get.to(() => const AuthProvider());
-          } else {
-            // Display error message
-            buildSnackBar(
-                'Error',
-                'An Unexpected Error occurred ${responseData['message']}',
-                AppColors.feedbackColor);
-            // print(responseData['message']);
-          }
-        } else {
-          // Handle non-200 status codes
-          buildSnackBar(
-              'Error',
-              'An Unexpected Error occurred ${response.body}',
-              AppColors.feedbackColor);
-        }
-      } catch (error) {
-        // Handle network errors
-        if (error.toString().contains(' Network is unreachable')) {
-          buildSnackBar('Network Error', 'Check your Internet Connection',
-              AppColors.feedbackColor);
-        } else {
-          buildSnackBar(
-              'Error', 'An Unexpected Error occurred', AppColors.feedbackColor);
-        }
+        // Navigate to the login page
+        Get.offAll(() => const AuthPageSwitcher());
+      } else {
+        // Display error message
+        buildSnackBar(
+          'Error',
+          'An Unexpected Error occurred: ${responseData['message']}',
+          AppColors.feedbackColor,
+        );
       }
+    } catch (error) {
+      // Handle network errors
+      buildSnackBar(
+        'Network Error',
+        'Check your Internet Connection',
+        AppColors.feedbackColor,
+      );
+      print('Error: $error');
     }
   }
 

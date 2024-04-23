@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:passion_picks/config/custom_widgets.dart';
 import 'package:passion_picks/config/style.dart';
 import 'package:passion_picks/views/dashboard_drawer.dart';
 import 'package:passion_picks/views/nav_bar_pages/history_page.dart';
 import 'package:passion_picks/views/nav_bar_pages/home_page.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import '../controllers/wishlist_controller.dart';
 import 'nav_bar_pages/cart_page.dart';
 import 'nav_bar_pages/wishlist_page.dart';
 
 class NavBarPage extends StatefulWidget {
-  const NavBarPage({super.key});
+
+  final String? userId;
+  final String? userEmail;
+  final String? username;
+  final String? location;
+
+
+  const NavBarPage({super.key, required this.userId, required this.userEmail, required this.username, required this.location});
 
   @override
   State<NavBarPage> createState() => _NavBarPageState();
@@ -28,27 +31,15 @@ class _NavBarPageState extends State<NavBarPage> {
     'assets/icons/wishlist.png'
   ];
 
-  String? userId = '';
-  String? userEmail = '';
-  String? username = '';
-  String? location = '';
+
 
   @override
   void initState() {
     super.initState();
     pageController = PageController(initialPage: 1);
-    getUserData();
+
   }
 
-  Future<void> getUserData() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      userId = prefs.getString('userId');
-      userEmail = prefs.getString('userEmail');
-      username = prefs.getString('username');
-      location = prefs.getString('location');
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +71,7 @@ class _NavBarPageState extends State<NavBarPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   MyTextWidget(
-                      myText: 'Welcome, $username \u{1F44B}',
+                      myText: 'Welcome, ${widget.username} \u{1F44B}',
                       fontSize: 20.0,
                       fontWeight: FontWeight.w900,
                       fontColor: AppColors.menuTextColor),
@@ -122,16 +113,16 @@ class _NavBarPageState extends State<NavBarPage> {
             },
             children: [
               HistoryPage(
-                userId: userId,
+                userId: widget.userId,
               ),
               HomePage(
-                userId: userId,
+                userId: widget.userId,
               ),
               CartPage(
-                userId: userId,
+                userId: widget.userId,
               ),
               WishListPage(
-                userId: userId,
+                userId: widget.userId,
               )
             ],
           ),

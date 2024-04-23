@@ -252,15 +252,14 @@ class _ProductViewPageState extends State<ProductViewPage> {
                           productId: widget.product.id,
                           quantity: itemQuantity.toString(),
                         );
-                        // print(transaction);
 
                         // Call the addTransaction function with the Transaction object
                         addTransaction(transaction).then((value) {
                           Get.back(); // Close the dialog
                           if (isInCart) {
                             // If the item is in the cart, remove it after the transaction is completed
-                            cartController.removeFromCart('2', widget.product);
-                            cartController.update();
+                            cartController.removeFromCart(
+                                widget.userId, widget.product);
                           }
                           value == 'Success'
                               ? buildSnackBar(

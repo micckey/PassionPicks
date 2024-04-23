@@ -8,7 +8,7 @@ class CartIcon extends StatelessWidget {
   final Product product;
   final String? userId;
 
-  const CartIcon({Key? key, required this.product, this.userId}) : super(key: key);
+  const CartIcon({super.key, required this.product, this.userId});
 
   @override
   Widget build(BuildContext context) {
