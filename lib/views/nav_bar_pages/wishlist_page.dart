@@ -6,16 +6,26 @@ import 'package:passion_picks/controllers/wishlist_controller.dart';
 import '../../config/custom_widgets.dart';
 import '../product_view_page.dart';
 
-class WishListPage extends StatelessWidget {
+class WishListPage extends StatefulWidget {
   final String? userId;
 
   const WishListPage({super.key, this.userId});
 
   @override
-  Widget build(BuildContext context) {
-    final WishListController wishlistController =
-        Get.find<WishListController>();
+  State<WishListPage> createState() => _WishListPageState();
+}
 
+class _WishListPageState extends State<WishListPage> {
+  final WishListController wishlistController = Get.find<WishListController>();
+
+  @override
+  void initState() {
+    super.initState();
+    wishlistController.fetchWishlistProducts(widget.userId);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.primaryBackgroundColor,
       body: Obx(() {
@@ -44,8 +54,8 @@ class WishListPage extends StatelessWidget {
                 final product = wishlistController.wishlistProducts[index];
                 return GestureDetector(
                   onTap: () {
-                    Get.to(() =>
-                        ProductViewPage(product: product, userId: userId));
+                    Get.to(() => ProductViewPage(
+                        product: product, userId: widget.userId));
                   },
                   child: Container(
                     padding: const EdgeInsets.all(8),
@@ -112,7 +122,7 @@ class WishListPage extends StatelessWidget {
                                 ElevatedButton(
                                   onPressed: () {
                                     wishlistController.removeFromWishList(
-                                        userId, product);
+                                        widget.userId, product);
                                     wishlistController.update();
                                     Get.back();
                                   },

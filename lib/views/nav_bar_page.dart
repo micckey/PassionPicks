@@ -1,21 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:passion_picks/config/custom_widgets.dart';
 import 'package:passion_picks/config/style.dart';
 import 'package:passion_picks/views/dashboard_drawer.dart';
 import 'package:passion_picks/views/nav_bar_pages/history_page.dart';
 import 'package:passion_picks/views/nav_bar_pages/home_page.dart';
+import '../controllers/cart_controller.dart';
+import '../controllers/wishlist_controller.dart';
 import 'nav_bar_pages/cart_page.dart';
 import 'nav_bar_pages/wishlist_page.dart';
 
 class NavBarPage extends StatefulWidget {
-
   final String? userId;
   final String? userEmail;
   final String? username;
   final String? location;
 
-
-  const NavBarPage({super.key, required this.userId, required this.userEmail, required this.username, required this.location});
+  const NavBarPage(
+      {super.key,
+      required this.userId,
+      required this.userEmail,
+      required this.username,
+      required this.location});
 
   @override
   State<NavBarPage> createState() => _NavBarPageState();
@@ -31,15 +37,16 @@ class _NavBarPageState extends State<NavBarPage> {
     'assets/icons/wishlist.png'
   ];
 
-
+  final CartController cartController = Get.find<CartController>();
+  final WishListController wishlistController = Get.find<WishListController>();
 
   @override
   void initState() {
     super.initState();
     pageController = PageController(initialPage: 1);
-
+    cartController.fetchCartProducts(widget.userId);
+    wishlistController.fetchWishlistProducts(widget.userId);
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -99,7 +106,11 @@ class _NavBarPageState extends State<NavBarPage> {
           ),
         ),
       ),
-      drawer: const DashBoardDrawer(),
+      drawer: DashBoardDrawer(
+        username: widget.username,
+        location: widget.location,
+        email: widget.userEmail,
+      ),
       body: Stack(children: [
         Positioned.fill(
           // bottom: 100,

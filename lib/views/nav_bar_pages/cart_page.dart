@@ -6,10 +6,23 @@ import 'package:passion_picks/config/style.dart';
 import 'package:passion_picks/views/product_view_page.dart';
 import '../../controllers/cart_controller.dart';
 
-class CartPage extends StatelessWidget {
+class CartPage extends StatefulWidget {
   final String? userId;
 
-  const CartPage({super.key, this.userId});
+  const CartPage({Key? key, this.userId}) : super(key: key);
+
+  @override
+  _CartPageState createState() => _CartPageState();
+}
+
+class _CartPageState extends State<CartPage> {
+  final CartController cartController = Get.find<CartController>();
+
+  @override
+  void initState() {
+    super.initState();
+    cartController.fetchCartProducts(widget.userId);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,8 +30,6 @@ class CartPage extends StatelessWidget {
       backgroundColor: AppColors.primaryBackgroundColor,
       body: Obx(
         () {
-          final cartController = Get.find<CartController>();
-
           if (cartController.isLoading.value) {
             return Center(
               child: LoadingAnimationWidget.fourRotatingDots(
@@ -44,8 +55,8 @@ class CartPage extends StatelessWidget {
                   final product = cartController.cartProducts[index];
                   return GestureDetector(
                     onTap: () {
-                      Get.to(() =>
-                          ProductViewPage(product: product, userId: userId));
+                      Get.to(() => ProductViewPage(
+                          product: product, userId: widget.userId));
                     },
                     child: Container(
                       padding: const EdgeInsets.all(8),
@@ -112,7 +123,7 @@ class CartPage extends StatelessWidget {
                                   ElevatedButton(
                                     onPressed: () {
                                       cartController.removeFromCart(
-                                          userId, product);
+                                          widget.userId, product);
                                       Get.back();
                                     },
                                     style: ButtonStyle(

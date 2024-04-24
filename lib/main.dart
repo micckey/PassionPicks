@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:passion_picks/controllers/cart_controller.dart';
+import 'package:passion_picks/controllers/wishlist_controller.dart';
 import 'package:passion_picks/views/auth_pages/auth_provider.dart';
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  Get.put(CartController());
+  Get.put(WishListController());
   runApp(const MyApp());
 }
 

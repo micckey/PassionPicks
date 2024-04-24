@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:passion_picks/controllers/cart_controller.dart';
-import 'package:passion_picks/controllers/wishlist_controller.dart';
 import 'package:passion_picks/views/auth_pages/auth_page_switcher.dart';
 import 'package:passion_picks/views/nav_bar_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -38,11 +35,6 @@ class _AuthProviderState extends State<AuthProvider> {
       location = prefs.getString('location');
       // print('AUTH STATUS::::::: $isAuthenticated');
     });
-    if (isAuthenticated && userId != null) {
-      // Initialize controllers with userId
-      Get.put(WishListController(userId: userId!));
-      Get.put(CartController(userId: userId!));
-    }
   }
 
   @override

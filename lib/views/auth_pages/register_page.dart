@@ -6,7 +6,6 @@ import 'package:passion_picks/views/auth_pages/auth_page_switcher.dart';
 import '../../config/custom_widgets.dart';
 import '../../config/style.dart';
 
-
 class RegisterPage extends StatefulWidget {
   final VoidCallback switchPagesFunction;
 
@@ -84,6 +83,15 @@ class _RegisterPageState extends State<RegisterPage> {
       );
       print('Error: $error');
     }
+  }
+
+  @override
+  void dispose() {
+    usernameController.dispose();
+    emailController.dispose();
+    locationController.dispose();
+    passwordController.dispose();
+    super.dispose();
   }
 
   @override

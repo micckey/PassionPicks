@@ -8,16 +8,6 @@ class CartController extends GetxController {
   RxList<Product> cartProducts = <Product>[].obs;
   RxBool isLoading = false.obs;
 
-  late String? userId; // User ID variable
-
-  CartController({required this.userId});
-
-  @override
-  void onInit() {
-    super.onInit();
-    fetchCartProducts(userId); // Ensure userId is passed as a string
-  }
-
   void fetchCartProducts(String? userId) async {
     isLoading.value = true;
     try {

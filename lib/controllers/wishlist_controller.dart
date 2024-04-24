@@ -9,16 +9,6 @@ class WishListController extends GetxController {
   RxList<Product> wishlistProducts = <Product>[].obs;
   RxBool isLoading = false.obs;
 
-  late String? userId; // User ID variable
-
-  WishListController({required this.userId});
-
-  @override
-  void onInit() {
-    super.onInit();
-    fetchWishlistProducts(userId); // Ensure userId is passed as a string
-  }
-
   void fetchWishlistProducts(String? userId) async {
     isLoading.value = true;
     try {
